@@ -1,0 +1,8 @@
+2026-06-18 22:14:05,688 - truth-layer - INFO - PDF extraction completed successfully.
+2026-06-18 22:14:05,689 - truth-layer - ERROR - Claim extraction failed: '\n  "claims"'
+Traceback (most recent call last):
+  File "C:\Users\rajeev\OneDrive\Desktop\truth_layer\services\claim_extractor.py", line 28, in extract_claims
+    prompt = CLAIM_EXTRACTION_PROMPT.format(
+        document_text=document_text[:80000]
+    )
+KeyError: '\n  "claims"'

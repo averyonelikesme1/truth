@@ -2,7 +2,16 @@ import streamlit as st
 import pandas as pd
 from pathlib import Path
 from utils.logger import logger
+from services.verifier import FactVerifier
 from config.settings import MAX_FILE_SIZE_MB
+from services.report_generator import (
+    ReportGenerator
+)
+
+from services.pdf_extractor import PDFExtractor
+from services.claim_extractor import ClaimExtractor
+
+
 
 st.set_page_config(
     page_title="Truth Layer",
@@ -10,7 +19,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🛡️ Truth Layer")
+st.title("🛡️ Fact checker")
 st.subheader("AI Powered Fact Checking Platform")
 
 st.markdown(
@@ -28,7 +37,23 @@ uploaded_file = st.file_uploader(
     "Upload PDF",
     type=["pdf"]
 )
+with open(
+    f"temp_{uploaded_file.name}",
+    "wb"
+) as f:
+    f.write(uploaded_file.getbuffer())
 
+pdf_data = PDFExtractor.extract(
+    f"temp_{uploaded_file.name}"
+)
+
+extractor = ClaimExtractor()
+
+claims = extractor.extract_claims(
+    pdf_data["full_text"]
+)
+
+st.write(claims)
 if uploaded_file:
 
     file_size_mb = (
@@ -101,27 +126,8 @@ with col4:
         "False",
         "0"
     )
-from services.pdf_extractor import PDFExtractor
-from services.claim_extractor import ClaimExtractor
 
-with open(
-    f"temp_{uploaded_file.name}",
-    "wb"
-) as f:
-    f.write(uploaded_file.getbuffer())
 
-pdf_data = PDFExtractor.extract(
-    f"temp_{uploaded_file.name}"
-)
-
-extractor = ClaimExtractor()
-
-claims = extractor.extract_claims(
-    pdf_data["full_text"]
-)
-
-st.write(claims)
-from services.verifier import FactVerifier
 
 verifier = FactVerifier()
 
@@ -146,9 +152,7 @@ st.dataframe(
     results_df,
     use_container_width=True
 )
-from services.report_generator import (
-    ReportGenerator
-)
+
 
 if len(results_df) > 0:
 

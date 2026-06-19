@@ -13,6 +13,7 @@ LOG_DIR.mkdir(exist_ok=True)
 REPORT_DIR.mkdir(exist_ok=True)
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+print("API Key:", GEMINI_API_KEY)
 
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
